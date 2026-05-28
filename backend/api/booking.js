@@ -1,22 +1,9 @@
-const admin = require('firebase-admin');
+const { createClient } = require('@supabase/supabase-js');
 
-// Initialize Firebase Admin securely using Environment Variables in Vercel
-if (!admin.apps.length) {
-  try {
-    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
-      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount)
-      });
-    } else {
-      console.warn("FIREBASE_SERVICE_ACCOUNT env variable is missing!");
-      // Fallback for local testing if needed, though Vercel needs the env var
-      admin.initializeApp();
-    }
-  } catch (error) {
-    console.error("Firebase Admin initialization error", error);
-  }
-}
+// Initialize Supabase Client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bvzfewiwextobtpjhuzl.supabase.co';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_6_AsR6wXy-07vqq_S9UJGw_vN_wt-Hd';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = async (req, res) => {
   // CORS Headers
@@ -41,36 +28,33 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'hirerId is required' });
     }
 
-    const db = admin.firestore();
-    
-    // Server-side logic replacing the Firebase Cloud Function
-    console.log(`[Vercel Backend] Processing new booking from hirer: ${hirerId}`);
-    
-    // 1. You can add logic here to send FCM Push Notifications to the worker!
-    if (workerId) {
-       console.log(`Notification trigger: Informing worker ${workerId} about booking.`);
+    console.log(`[Vercel Backend] Processing new booking for Supabase from hirer: ${hirerId}`);
+
+    // Insert data into Supabase "bookings" table
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert([
+        {
+          hirer_id: hirerId,
+          worker_id: workerId || null,
+          pickup_lat: pickupLat || 0.0,
+          pickup_lon: pickupLon || 0.0,
+          price: price || 0.0,
+          status: 'PENDING'
+          // created_at is automatically handled by Supabase Postgres default values
+        }
+      ])
+      .select();
+
+    if (error) {
+      console.error("Supabase Insertion Error:", error);
+      return res.status(500).json({ error: 'Database Error', details: error.message });
     }
-
-    // 2. Save data to Firestore securely from the Vercel backend
-    const docRef = db.collection('bookings').doc();
-    const bookingData = {
-        bookingId: docRef.id,
-        hirerId,
-        workerId: workerId || null,
-        pickupLat: pickupLat || 0.0,
-        pickupLon: pickupLon || 0.0,
-        price: price || 0.0,
-        status: "PENDING",
-        createdAt: admin.firestore.FieldValue.serverTimestamp()
-    };
-
-    await docRef.set(bookingData);
 
     return res.status(200).json({ 
       success: true, 
-      message: "Booking created successfully via Vercel",
-      bookingId: docRef.id,
-      data: bookingData
+      message: "Booking created successfully in Supabase",
+      booking: data[0]
     });
 
   } catch (error) {

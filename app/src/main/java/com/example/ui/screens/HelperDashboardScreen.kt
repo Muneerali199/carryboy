@@ -27,6 +27,7 @@ fun HelperDashboardScreen(
     onNavigateToEarnings: () -> Unit,
     onNavigateToNewRequest: () -> Unit,
     onNavigateToOngoing: () -> Unit,
+    onNavigateToProfile: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -81,7 +82,7 @@ fun HelperDashboardScreen(
                 BottomNavItem(icon = Icons.Filled.Home, label = "Home", selected = true, onClick = {})
                 BottomNavItem(icon = Icons.Outlined.ListAlt, label = "Bookings", selected = false, onClick = onNavigateToOngoing)
                 BottomNavItem(icon = Icons.Outlined.Verified, label = "Safety", selected = false, onClick = {})
-                BottomNavItem(icon = Icons.Outlined.Person, label = "Profile", selected = false, onClick = {})
+                BottomNavItem(icon = Icons.Outlined.Person, label = "Profile", selected = false, onClick = onNavigateToProfile)
             }
         },
         containerColor = Surface
@@ -254,7 +255,7 @@ fun HelperDashboardScreen(
 }
 
 @Composable
-fun BottomNavItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, selected: Boolean, onClick: () -> Unit) {
+private fun BottomNavItem(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, selected: Boolean, onClick: () -> Unit) {
     val color = if (selected) Primary else OnSurfaceVariant
     val bgColor = if (selected) PrimaryFixed else Color.Transparent
     Column(

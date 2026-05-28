@@ -1,0 +1,11 @@
+{
+  "name": "carryboy-backend",
+  "version": "1.0.0",
+  "description": "Vercel serverless backend for Carryboy",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^11.11.0"
+  }
+}

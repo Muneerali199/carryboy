@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "189769760246",
+    "project_id": "docs-d402b",
+    "storage_bucket": "docs-d402b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189769760246:android:d912ba2e7529df4642dbd7",
+        "android_client_info": {
+          "package_name": "carryboy.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs0wVMpxZYi4msJ6JsAXaReQh6w7OEAGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

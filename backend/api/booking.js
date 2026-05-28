@@ -17,6 +17,15 @@ module.exports = async (req, res) => {
     return;
   }
 
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      message: "CarryBoy Booking API is live!",
+      usage: "Send a POST request with JSON body containing: hirerId, workerId (optional), pickupLat, pickupLon, price",
+      example: { hirerId: "user_123", pickupLat: 28.5, pickupLon: 77.1, price: 150 },
+      supabase_status: "Connected"
+    });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed. Use POST.' });
   }
